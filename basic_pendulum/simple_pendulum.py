@@ -1,5 +1,6 @@
 from tkinter import *
 import math
+import time
 
 # Environment
 PENDULUM_COUNT = 0
@@ -32,15 +33,22 @@ class Pendulum:
         self.angular_acceleration = 0
         self.damping = damping
         self.color = color
+        # Track elapsed time in real time
+        self.last_time = time.time()
     
     def start(self):
         global GRAVITY_ACCELERATION
         global BOB_RADIUS
+        
+        current = time.time()
+        dt = current - self.last_time
+        self.last_time = current
+        
         # Calculation Mechanics
         self.angular_acceleration = - (GRAVITY_ACCELERATION / self.length) * math.sin(self.angle)
-        self.angular_velocity += self.angular_acceleration
+        self.angular_velocity += self.angular_acceleration * dt * 60
         self.angular_velocity *= self.damping
-        self.angle += self.angular_velocity
+        self.angle += self.angular_velocity * dt * 60
         
         # Bob position calculation
         bob_position_x = self.length * math.sin(self.angle)
